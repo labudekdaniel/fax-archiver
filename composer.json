@@ -1,0 +1,17 @@
+{
+    "name": "labudek/fax-to-pdf",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "labudekdaniel",
+            "email": "labu018@gmail.com"
+        }
+    ],
+    "require": {
+        "setasign/fpdi": "^2.6"
+    }
+}

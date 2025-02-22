@@ -1,0 +1,22 @@
+{
+    "paths": {
+      "fax_input_dir": "input/faxes",
+      "customer_data_file": "input/people.json",
+      "output_pdf_dir": "outputs",
+      "processed_faxes_file": "processed.json"
+    },
+    "pdf_settings": {
+      "default_font": "Arial",
+      "font_size": 12,
+      "page_margin": 10
+    },
+    "locale": {
+      "charset": "UTF-8",
+      "date_format": "d/m/Y H:i"
+    },
+    "logging": {
+      "enabled": true,
+      "log_file": "logs/log.log"
+    }
+  }
+  
