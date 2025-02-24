@@ -54,35 +54,36 @@ class FaxProcessor {
         }
     }
 
-    public function scanAndProcessFaxes(): array {
+    public function scanAndProcessFaxes(PdfGenerator $pdfGenerator): void {
         foreach (scandir($this->faxDir) as $folder) {
             if ($folder === '.' || $folder === '..') continue;
             $folderPath = "{$this->faxDir}/{$folder}";
-    
             $firstPage = "{$folderPath}/1.png";
             if (!file_exists($firstPage)) {
                 $this->logger->log("Missing first page (1.png) in folder: $folder. Skipping fax.", 'ERROR');
                 continue;
             }
-    
+
             $qrOutput = shell_exec("zbarimg --raw " . escapeshellarg($firstPage));
             $uuid = trim($qrOutput);
-    
+
             if (isset($this->customers[$uuid])) {
                 $processedFolders = $this->processedFaxes[$uuid] ?? [];
-    
+
                 if (!in_array($folder, $processedFolders)) {
                     $this->customers[$uuid]->faxes[] = new Fax($folder, $folderPath);
                     $this->processedFaxes[$uuid][] = $folder;
                     $this->logger->log("Processed fax for ID: $uuid | Folder: $folder");
+
+        
+                    usort($this->customers[$uuid]->faxes, fn($a, $b) => strcmp($a->timestamp, $b->timestamp));
+                    $pdfGenerator->generateCustomerPdf($this->customers[$uuid]);
+                    $this->logger->log("Updated PDF for customer: $uuid after processing new fax.");
                 }
             } else {
                 $this->logger->log("Invalid or missing UUID in QR code for folder: $folder", 'ERROR');
             }
         }
-    
         $this->saveProcessedFaxes();
-        return $this->customers;
     }
-    
 }

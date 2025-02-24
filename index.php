@@ -19,12 +19,6 @@ $processedFaxesFile = $config->get('paths.processed_faxes_file');
 $faxProcessor = new FaxProcessor($faxInputDir, $customerDataFile, $processedFaxesFile, $logger);
 $pdfGenerator = new PdfGenerator($outputPdfDir, $config, $logger);
 
-$customers = $faxProcessor->scanAndProcessFaxes();
-
-foreach ($customers as $customer) {
-    if (!empty($customer->faxes)) {
-        $pdfGenerator->generateCustomerPdf($customer);
-    }
-}
+$faxProcessor->scanAndProcessFaxes($pdfGenerator);
 
 $logger->log("Script completed.");
